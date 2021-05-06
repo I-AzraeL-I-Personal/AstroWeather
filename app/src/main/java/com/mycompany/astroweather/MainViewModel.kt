@@ -9,46 +9,24 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.math.absoluteValue
 
 class MainViewModel : ViewModel() {
 
-    //todo set cords in settings menu
-    private val location = AstroCalculator.Location("51.7833".toDouble(), "19.4667".toDouble())
-    val astroCalculator = MutableLiveData(AstroCalculator(getCurrentAstroDateTime(), location))
+    val location = MutableLiveData(AstroCalculator.Location("0".toDouble(), "0".toDouble()))
+    val astroCalculator = MutableLiveData(AstroCalculator(createAstroDateTime(), location.value))
+    var delayMillis = 1000L
 
     init {
         viewModelScope.launch {
             while (true) {
-                astroCalculator.value?.dateTime = getCurrentAstroDateTime()
-                astroCalculator.value = astroCalculator.value
-                delay(DELAY_MS)
+                astroCalculator.value = astroCalculator.value?.apply { dateTime = createAstroDateTime() }
+                //Log.d("Update", delayMillis.toString())
+                delay(delayMillis)
             }
         }
     }
 
-    private fun updateAstroCaculator() {
-        astroCalculator.let {
-            it.value?.dateTime = getCurrentAstroDateTime()
-            it.value?.location = location
-        }
-    }
-
-    fun getFormattedCoordinates(): String {
-        val latitude = location.latitude.absoluteValue.toString() + when {
-            location.latitude > 0 -> "N"
-            location.latitude < 0 -> "S"
-            else -> ""
-        }
-        val longitude = location.longitude.absoluteValue.toString() + when {
-            location.longitude > 0 -> "E"
-            location.longitude < 0 -> "W"
-            else -> ""
-        }
-        return "$latitude $longitude"
-    }
-
-    private fun getCurrentAstroDateTime(): AstroDateTime {
+    private fun createAstroDateTime(): AstroDateTime {
         return Calendar.getInstance().let {
             AstroDateTime(
                 it[Calendar.YEAR],

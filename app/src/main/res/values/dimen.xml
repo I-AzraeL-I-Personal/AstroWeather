@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="labelTextSize">18sp</dimen>
+    <dimen name="valueTextSize">16sp</dimen>
+    <dimen name="topBarTextSize">12sp</dimen>
+</resources>

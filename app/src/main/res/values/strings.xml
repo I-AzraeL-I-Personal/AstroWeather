@@ -1,5 +1,27 @@
 <resources>
     <string name="app_name">AstroWeather</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="coordinates_header">Coordinates</string>
+    <string name="latitude_title">Latitude</string>
+    <string name="longitude_title">Longitude</string>
+
+    <string name="data_header">Data</string>
+    <string name="data_title">Refresh rate</string>
+    <string name="latitude_default_value">51.7833</string>
+    <string name="longitude_default_value">19.4667</string>
+    <string name="sunriseAzimuthLabel">Sunrise Azimuth</string>
+    <string name="sunsetAzimuthLabel">Sunset Azimuth</string>
+    <string name="sunriseTimeLabel">Sunrise</string>
+    <string name="sunsetTimeLabel">Sunset</string>
+    <string name="civilTwilightTimeLabel">Civil Twilight</string>
+    <string name="civilDawnTimeLabel">Civil Dawn</string>
+    <string name="moonsetTimeLabel">Moonset</string>
+    <string name="moonriseTimeLabel">Moonrise</string>
+    <string name="fullMoonTimeLabel">Full Moon</string>
+    <string name="newMoonTimeLabel">New Moon</string>
+    <string name="lunarDayLabel">Lunar Day</string>
+    <string name="moonPhaseLabel">Moon Phase</string>
 </resources>

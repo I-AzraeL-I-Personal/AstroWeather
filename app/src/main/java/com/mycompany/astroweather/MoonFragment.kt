@@ -25,23 +25,27 @@ class MoonFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        moonriseTime = view.findViewById(R.id.moonriseTime)
-        moonsetTime = view.findViewById(R.id.moonsetTime)
-        newMoonTime = view.findViewById(R.id.newMoonTime)
-        fullMoonTime = view.findViewById(R.id.fullMoonTime)
-        moonPhase = view.findViewById(R.id.moonPhase)
-        lunarDay = view.findViewById(R.id.lunarDay)
+        with(view) {
+            moonriseTime = findViewById(R.id.moonriseTime)
+            moonsetTime = findViewById(R.id.moonsetTime)
+            newMoonTime = findViewById(R.id.newMoonTime)
+            fullMoonTime = findViewById(R.id.fullMoonTime)
+            moonPhase = findViewById(R.id.moonPhase)
+            lunarDay = findViewById(R.id.lunarDay)
+        }
         viewModel.astroCalculator.observe(viewLifecycleOwner, { updateMoonInfo() })
     }
 
     private fun updateMoonInfo() {
-        viewModel.astroCalculator.value?.moonInfo?.let {
-            moonriseTime.text = it.moonrise.toString()
-            moonsetTime.text = it.moonset.toString()
-            newMoonTime.text = it.nextNewMoon.toString()
-            fullMoonTime.text = it.nextFullMoon.toString()
-            moonPhase.text = ("${it.illumination.times(100).roundToInt()}%")
-            lunarDay.text = it.age.toString()
+        viewModel.astroCalculator.value?.moonInfo?.apply {
+            with(Util) {
+                moonriseTime.text = formatDate(moonrise)
+                moonsetTime.text = formatDate(moonset)
+                newMoonTime.text = formatDate(nextNewMoon)
+                fullMoonTime.text = formatDate(nextFullMoon)
+                moonPhase.text = ("${illumination.times(100).roundToInt()}%")
+                lunarDay.text = format(age / 12)
+            }
         }
     }
 }
