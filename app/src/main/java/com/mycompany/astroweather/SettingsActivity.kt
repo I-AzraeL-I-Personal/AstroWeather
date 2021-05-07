@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
+import java.math.BigDecimal
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -29,10 +30,9 @@ class SettingsActivity : AppCompatActivity() {
             mapOf("latitude" to 90, "longitude" to 180).forEach { (key, value) ->
                 findPreference<EditTextPreference>(key)?.apply {
                     setOnBindEditTextListener { it.inputType = inputFlags }
-                    setOnPreferenceChangeListener { preference, newValue ->
-                        val input = newValue.toString().toDouble()
+                    setOnPreferenceChangeListener { _, newValue ->
+                        val input = BigDecimal(newValue.toString()).toDouble()
                         if (input >= -value && input <= value) {
-                            preference.summary = input.toString()
                             true
                         } else {
                             Toast.makeText(activity, "$key must be between ${-value} and $value",

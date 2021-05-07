@@ -1,14 +1,20 @@
 package com.mycompany.astroweather
 
 import com.astrocalculator.AstroDateTime
+import java.math.BigDecimal
 import java.math.RoundingMode
 
 object Util {
 
     @JvmStatic
-    fun format(number: Double): String = number.toBigDecimal()
-        .setScale(PRECISION, RoundingMode.HALF_EVEN)
-        .toPlainString()
+    fun format(number: Double): String {
+        if (number.isNaN()) {
+            return "0"
+        }
+        return BigDecimal(number)
+            .setScale(PRECISION, RoundingMode.HALF_EVEN)
+            .toPlainString()
+    }
 
     @JvmStatic
     fun formatDate(date: AstroDateTime): String = with(date) {

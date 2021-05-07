@@ -20,7 +20,6 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             while (true) {
                 astroCalculator.value = astroCalculator.value?.apply { dateTime = createAstroDateTime() }
-                //Log.d("Update", delayMillis.toString())
                 delay(delayMillis)
             }
         }
