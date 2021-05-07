@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mainCoordinates: TextView
     private val viewModel: MainViewModel by viewModels()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
