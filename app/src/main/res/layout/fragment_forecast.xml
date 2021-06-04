@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/day_background"
     android:paddingTop="40dp"
-    tools:context=".fragment.SunFragment">
+    tools:context=".fragment.ForecastFragment">
 
     <TableRow
         android:layout_width="match_parent"
@@ -14,23 +13,23 @@
         android:gravity="bottom|center">
 
         <TextView
+            android:id="@+id/day1Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:shadowColor="#FFFFFF"
             android:shadowRadius="10"
-            android:text="@string/sunriseAzimuthLabel"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="@dimen/labelTextSize" />
 
         <TextView
+            android:id="@+id/day2Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:shadowColor="#FFFFFF"
             android:shadowRadius="10"
-            android:text="@string/sunsetAzimuthLabel"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="@dimen/labelTextSize" />
@@ -43,7 +42,7 @@
         android:gravity="center|top">
 
         <TextView
-            android:id="@+id/sunriseAzimuth"
+            android:id="@+id/day1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -54,65 +53,7 @@
             android:textSize="@dimen/valueTextSize" />
 
         <TextView
-            android:id="@+id/sunsetAzimuth"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="@dimen/valueTextSize" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.1"
-        android:gravity="bottom|center">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
-            android:text="@string/sunriseTimeLabel"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="@dimen/labelTextSize" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
-            android:text="@string/sunsetTimeLabel"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="@dimen/labelTextSize" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center|top">
-
-        <TextView
-            android:id="@+id/sunriseTime"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="@dimen/valueTextSize" />
-
-        <TextView
-            android:id="@+id/sunsetTime"
+            android:id="@+id/day2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -130,23 +71,23 @@
         android:gravity="bottom|center">
 
         <TextView
+            android:id="@+id/day3Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:shadowColor="#FFFFFF"
             android:shadowRadius="10"
-            android:text="@string/civilDawnTimeLabel"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="@dimen/labelTextSize" />
 
         <TextView
+            android:id="@+id/day4Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:shadowColor="#FFFFFF"
             android:shadowRadius="10"
-            android:text="@string/civilTwilightTimeLabel"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="@dimen/labelTextSize" />
@@ -159,7 +100,7 @@
         android:gravity="center|top">
 
         <TextView
-            android:id="@+id/civilDawnTime"
+            android:id="@+id/day3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -170,7 +111,54 @@
             android:textSize="@dimen/valueTextSize" />
 
         <TextView
-            android:id="@+id/civilTwilightTime"
+            android:id="@+id/day4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:shadowColor="#FFFFFF"
+            android:shadowRadius="10"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="@dimen/valueTextSize" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.1"
+        android:gravity="bottom|center">
+
+        <TextView
+            android:id="@+id/day5Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:shadowColor="#FFFFFF"
+            android:shadowRadius="10"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="@dimen/labelTextSize" />
+
+        <TextView
+            android:id="@+id/day6Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:shadowColor="#FFFFFF"
+            android:shadowRadius="10"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="@dimen/labelTextSize" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center|top">
+
+        <TextView
+            android:id="@+id/day5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -180,6 +168,131 @@
             android:textColor="#000000"
             android:textSize="@dimen/valueTextSize" />
 
+        <TextView
+            android:id="@+id/day6"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:shadowColor="#FFFFFF"
+            android:shadowRadius="10"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="@dimen/valueTextSize" />
     </TableRow>
 
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.1"
+        android:gravity="bottom|center">
+
+        <TextView
+            android:id="@+id/day7Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:shadowColor="#FFFFFF"
+            android:shadowRadius="10"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="@dimen/labelTextSize" />
+
+        <TextView
+            android:id="@+id/day8Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:shadowColor="#FFFFFF"
+            android:shadowRadius="10"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="@dimen/labelTextSize" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center|top">
+
+        <TextView
+            android:id="@+id/day7"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:shadowColor="#FFFFFF"
+            android:shadowRadius="10"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="@dimen/valueTextSize" />
+
+        <TextView
+            android:id="@+id/day8"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:shadowColor="#FFFFFF"
+            android:shadowRadius="10"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="@dimen/valueTextSize" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.1"
+        android:gravity="bottom|center">
+
+        <TextView
+            android:id="@+id/day9Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:shadowColor="#FFFFFF"
+            android:shadowRadius="10"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="@dimen/labelTextSize" />
+
+        <TextView
+            android:id="@+id/day10Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:shadowColor="#FFFFFF"
+            android:shadowRadius="10"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="@dimen/labelTextSize" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center|top">
+
+        <TextView
+            android:id="@+id/day9"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:shadowColor="#FFFFFF"
+            android:shadowRadius="10"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="@dimen/valueTextSize" />
+
+        <TextView
+            android:id="@+id/day10"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:shadowColor="#FFFFFF"
+            android:shadowRadius="10"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="@dimen/valueTextSize" />
+    </TableRow>
 </TableLayout>

@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astrocalculator.AstroCalculator
 import com.astrocalculator.AstroDateTime
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.GsonBuilder
+import com.mycompany.astroweather.model.Weather
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -12,9 +15,10 @@ import java.util.concurrent.TimeUnit
 
 class MainViewModel : ViewModel() {
 
-    val location = MutableLiveData(AstroCalculator.Location("0".toDouble(), "0".toDouble()))
+    val location = MutableLiveData(AstroCalculator.Location(0.0, 0.0))
     val astroCalculator = MutableLiveData(AstroCalculator(createAstroDateTime(), location.value))
     var delayMillis = 1000L
+    lateinit var weatherData: Weather
 
     init {
         viewModelScope.launch {

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/night_background"
     android:paddingTop="40dp"
-    tools:context=".MoonFragment">
+    tools:context=".fragment.MoonFragment">
 
     <TableRow
         android:layout_width="match_parent"

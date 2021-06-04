@@ -24,4 +24,16 @@
     <string name="newMoonTimeLabel">New Moon</string>
     <string name="lunarDayLabel">Lunar Day</string>
     <string name="moonPhaseLabel">Moon Phase</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cityLabel">City</string>
+    <string name="timeLabel">Time</string>
+    <string name="coordinatesLabel">Coordinates</string>
+    <string name="temperatureLabel">Temperature</string>
+    <string name="pressureLabel">Pressure</string>
+    <string name="conditionsLabel">Conditions</string>
+    <string name="windDirectionLabel">Wind direction</string>
+    <string name="windSpeedLabel">Wind speed</string>
+    <string name="humidityLabel">Humidity</string>
+    <string name="visibilityLabel">Visibility</string>
 </resources>

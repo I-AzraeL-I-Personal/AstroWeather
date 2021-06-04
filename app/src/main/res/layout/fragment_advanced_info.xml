@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/day_background"
     android:paddingTop="40dp"
-    tools:context=".fragment.SunFragment">
+    tools:context=".fragment.AdvancedInfoFragment" >
 
     <TableRow
         android:layout_width="match_parent"
@@ -19,7 +18,7 @@
             android:layout_weight="1"
             android:shadowColor="#FFFFFF"
             android:shadowRadius="10"
-            android:text="@string/sunriseAzimuthLabel"
+            android:text="@string/windDirectionLabel"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="@dimen/labelTextSize" />
@@ -30,7 +29,7 @@
             android:layout_weight="1"
             android:shadowColor="#FFFFFF"
             android:shadowRadius="10"
-            android:text="@string/sunsetAzimuthLabel"
+            android:text="@string/windSpeedLabel"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="@dimen/labelTextSize" />
@@ -43,7 +42,7 @@
         android:gravity="center|top">
 
         <TextView
-            android:id="@+id/sunriseAzimuth"
+            android:id="@+id/windDirection"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -54,65 +53,7 @@
             android:textSize="@dimen/valueTextSize" />
 
         <TextView
-            android:id="@+id/sunsetAzimuth"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="@dimen/valueTextSize" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.1"
-        android:gravity="bottom|center">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
-            android:text="@string/sunriseTimeLabel"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="@dimen/labelTextSize" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
-            android:text="@string/sunsetTimeLabel"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="@dimen/labelTextSize" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center|top">
-
-        <TextView
-            android:id="@+id/sunriseTime"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="@dimen/valueTextSize" />
-
-        <TextView
-            android:id="@+id/sunsetTime"
+            android:id="@+id/windSpeed"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -135,7 +76,7 @@
             android:layout_weight="1"
             android:shadowColor="#FFFFFF"
             android:shadowRadius="10"
-            android:text="@string/civilDawnTimeLabel"
+            android:text="@string/humidityLabel"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="@dimen/labelTextSize" />
@@ -146,7 +87,7 @@
             android:layout_weight="1"
             android:shadowColor="#FFFFFF"
             android:shadowRadius="10"
-            android:text="@string/civilTwilightTimeLabel"
+            android:text="@string/visibilityLabel"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="@dimen/labelTextSize" />
@@ -159,7 +100,7 @@
         android:gravity="center|top">
 
         <TextView
-            android:id="@+id/civilDawnTime"
+            android:id="@+id/humidity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -170,7 +111,7 @@
             android:textSize="@dimen/valueTextSize" />
 
         <TextView
-            android:id="@+id/civilTwilightTime"
+            android:id="@+id/visibility"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -179,7 +120,6 @@
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="@dimen/valueTextSize" />
-
     </TableRow>
 
 </TableLayout>

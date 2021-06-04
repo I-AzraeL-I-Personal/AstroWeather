@@ -3,14 +3,12 @@ package com.mycompany.astroweather
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextClock
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -19,8 +17,15 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.GsonBuilder
+import com.mycompany.astroweather.activity.SettingsActivity
+import com.mycompany.astroweather.fragment.*
+import com.mycompany.astroweather.model.Weather
+import com.mycompany.astroweather.util.Util
 
-const val FRAGMENT_COUNT = 2
+const val FRAGMENT_COUNT = 5
+const val DAY_COUNT = 10
 const val PRECISION = 4
 
 class MainActivity : AppCompatActivity() {
@@ -34,6 +39,28 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        mainClock = findViewById(R.id.mainTextClock)
+        mainCoordinates = findViewById(R.id.location)
+
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        viewModel.location.value?.let {
+            sharedPreferences?.apply {
+                it.latitude = getString("latitude", getString(R.string.latitude_default_value))!!.toDouble()
+                it.longitude = getString("longitude", getString(R.string.longitude_default_value))!!.toDouble()
+                viewModel.delayMillis = getString("rate", "900000")!!.toLong()
+            }
+        }
+
+        val gson = GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .create()
+        val jsonString = applicationContext.assets.open("weather.json").bufferedReader().readText()
+        val model = gson.fromJson(jsonString, Weather::class.java)
+        viewModel.weatherData = model
+
+        //viewModel.location.observe(this, { updateCoordinates() })
+        updateCoordinates()
+
         viewPager = findViewById<ViewPager2>(R.id.pager).apply {
             adapter = FragmentAdapter(supportFragmentManager, lifecycle)
             (getChildAt(0) as RecyclerView).apply {
@@ -44,20 +71,6 @@ class MainActivity : AppCompatActivity() {
                     clipToPadding = false
                     isUserInputEnabled = false
                 }
-            }
-        }
-
-        mainClock = findViewById(R.id.mainTextClock)
-        mainCoordinates = findViewById(R.id.location)
-
-        viewModel.location.observe(this, { updateCoordinates() })
-
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        viewModel.location.value?.let {
-            sharedPreferences?.apply {
-                it.latitude = getString("latitude", getString(R.string.latitude_default_value))!!.toDouble()
-                it.longitude = getString("longitude", getString(R.string.longitude_default_value))!!.toDouble()
-                viewModel.delayMillis = getString("rate", "900000")!!.toLong()
             }
         }
     }
@@ -86,9 +99,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateCoordinates() {
         mainCoordinates.text = viewModel.location.value?.run {
-            with(Util) {
-                "${format(latitude)} ${format(longitude)}"
-            }
+            Util.formatCords(latitude, longitude)
         }
     }
 
@@ -97,8 +108,11 @@ class MainActivity : AppCompatActivity() {
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
-                0 -> SunFragment()
-                1 -> MoonFragment()
+                0 -> BasicInfoFragment()
+                1 -> AdvancedInfoFragment()
+                2 -> ForecastFragment()
+                3 -> SunFragment()
+                4 -> MoonFragment()
                 else -> throw IllegalStateException("Unexpected value: $position")
             }
         }

@@ -1,6 +1,7 @@
-package com.mycompany.astroweather
+package com.mycompany.astroweather.util
 
 import com.astrocalculator.AstroDateTime
+import com.mycompany.astroweather.PRECISION
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -14,6 +15,11 @@ object Util {
         return BigDecimal(number)
             .setScale(PRECISION, RoundingMode.HALF_EVEN)
             .toPlainString()
+    }
+
+    @JvmStatic
+    fun formatCords(latitude: Double, longitude: Double): String {
+        return "${format(latitude)} ${format(longitude)}"
     }
 
     @JvmStatic

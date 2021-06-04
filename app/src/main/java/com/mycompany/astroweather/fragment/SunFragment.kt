@@ -1,4 +1,4 @@
-package com.mycompany.astroweather
+package com.mycompany.astroweather.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.mycompany.astroweather.MainViewModel
+import com.mycompany.astroweather.R
+import com.mycompany.astroweather.util.Util
 
 class SunFragment : Fragment() {
 

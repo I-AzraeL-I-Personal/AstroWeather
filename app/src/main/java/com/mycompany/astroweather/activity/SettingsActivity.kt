@@ -1,4 +1,4 @@
-package com.mycompany.astroweather
+package com.mycompany.astroweather.activity
 
 import android.os.Bundle
 import android.text.InputType.*
@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
+import com.mycompany.astroweather.R
 import java.math.BigDecimal
 
 class SettingsActivity : AppCompatActivity() {
