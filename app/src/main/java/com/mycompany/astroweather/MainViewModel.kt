@@ -18,16 +18,19 @@ class MainViewModel(private val delayMillis: Long, private val file: File, val c
     private val _location = MutableLiveData(AstroCalculator.Location(0.0, 0.0))
     private val _astroCalculator = MutableLiveData(AstroCalculator(createAstroDateTime(), _location.value))
     private val _weatherData = MutableLiveData<Forecast>()
+    private val _weatherList = MutableLiveData<MutableList<Forecast>>(mutableListOf())
     private val gson = GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
         .create()
 
-    val weatherList: MutableList<Forecast>
+    val weatherList: LiveData<MutableList<Forecast>> = _weatherList
     val astroCalculator: LiveData<AstroCalculator> = _astroCalculator
     val weatherData: LiveData<Forecast>  = _weatherData
 
     init {
-        weatherList = loadDataFromFile()
+        if (file.length() != 0L) {
+            _weatherList.value = loadDataFromFile()
+        }
         viewModelScope.launch {
             while (true) {
                 _astroCalculator.value = astroCalculator.value?.apply { dateTime = createAstroDateTime() }
@@ -37,22 +40,17 @@ class MainViewModel(private val delayMillis: Long, private val file: File, val c
     }
 
     fun setCurrentWeather(id: Int) {
-        _weatherData.value = weatherList[id]
+        _weatherData.value = _weatherList.value?.get(id)
         _location.value?.apply {
-            latitude = weatherList[id].latitude
-            longitude = weatherList[id].longitude
+            latitude = _weatherData.value!!.latitude
+            longitude = _weatherData.value!!.longitude
         }
         _astroCalculator.value = astroCalculator.value?.apply { dateTime = createAstroDateTime() }
     }
 
     fun addWeather(weather: Forecast) {
-        weatherList.add(weather)
-        file.writeText(gson.toJson(weatherList))
-    }
-
-    fun clearWeather() {
-        weatherList.clear()
-        file.writeText(gson.toJson(weatherList))
+        weatherList.value?.add(weather)
+        file.writeText(gson.toJson(weatherList.value))
     }
 
     private fun loadDataFromFile(): MutableList<Forecast> {

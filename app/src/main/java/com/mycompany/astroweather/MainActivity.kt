@@ -30,9 +30,7 @@ import com.mycompany.astroweather.util.Unit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
@@ -56,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         .create()
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
     private val forecastService = retrofit.create(ForecastService::class.java)
 
@@ -68,15 +66,17 @@ class MainActivity : AppCompatActivity() {
         val delayMillis = preferences["delayMillis"] as Long
         val currentUnit = preferences["currentUnit"] as Unit
 
-        val file = File("${filesDir}/weather.json")
+        val file = File("${filesDir}/weather.json").also { it.createNewFile() }
         if (isOnline()) {
-            val forecasts = loadDataFromFile(file)
-            val updatedForecasts = updateForecast(forecasts)
-            saveDataToFile(file, updatedForecasts)
+            if (file.length() != 0L) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val forecasts = loadDataFromFile(file)
+                    val updatedForecasts = updateForecast(forecasts)
+                    saveDataToFile(file, updatedForecasts)
+                }
+            }
         } else {
-            Toast.makeText(applicationContext,
-                "Can't connect to the Internet. Some info may be outdated",
-                Toast.LENGTH_LONG).show()
+            showToast("Can't connect to the Internet. Some info may be outdated")
         }
 
         val model: MainViewModel by viewModels {
@@ -98,8 +98,8 @@ class MainActivity : AppCompatActivity() {
         val spinner = (menu!!.findItem(R.id.spinner).actionView) as Spinner
         initCitySpinner(spinner)
 
-        val searchView = (menu.findItem(R.id.location).actionView) as EditText
-        initCityEditText(searchView)
+        val editText = (menu.findItem(R.id.location).actionView) as EditText
+        initCityEditText(editText)
 
         return true
     }
@@ -140,12 +140,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initCitySpinner(spinner: Spinner) {
-        val adapter = ArrayAdapter(this,
-            android.R.layout.simple_spinner_item,
-            viewModel.weatherList.map { forecast -> forecast.name }).apply {
-            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        }
-        spinner.adapter = adapter
+        viewModel.weatherList.observe(this, {
+            val adapter = ArrayAdapter(this,
+                android.R.layout.simple_spinner_item,
+                it.map { forecast -> forecast.name })
+            spinner.adapter = adapter
+        })
+
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -166,62 +167,49 @@ class MainActivity : AppCompatActivity() {
         }
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                sendGeocodeRequestAsync(editText.text.toString())
-                editText.text.clear()
+                CoroutineScope(Dispatchers.IO).launch {
+                    sendGeocodeRequest(editText.text.toString())?.let { geocode ->
+                        sendForecastRequest(geocode.latitude, geocode.longitude, geocode.name)?.let { forecast ->
+                            withContext(Dispatchers.Main) {
+                                viewModel.addWeather(forecast)
+                                editText.text.clear()
+                                invalidateOptionsMenu()
+                            }
+                        }
+                    }
+                }
             }
             false
         }
     }
 
-    private fun sendGeocodeRequestAsync(location: String) {
-        forecastService.getGeocode(location).enqueue(object : Callback<List<Geocode>> {
-            override fun onResponse(call: Call<List<Geocode>>, response: Response<List<Geocode>>) {
-                if (response.isSuccessful) {
-                    val geocode = response.body()?.get(0)
-                    if (geocode != null) {
-                        sendForecastRequestAsync(geocode.latitude, geocode.longitude, geocode.name)
-                    }
-                } else {
-                    Toast.makeText(applicationContext, "Not found", Toast.LENGTH_LONG).show()
-                }
-            }
-            override fun onFailure(call: Call<List<Geocode>>, t: Throwable) {
-                Toast.makeText(applicationContext, "Error", Toast.LENGTH_LONG).show()
-            }
-        })
+    private suspend fun sendGeocodeRequest(location: String): Geocode? {
+        val response = forecastService.getGeocode(location)
+        var geocode: Geocode? = null
+        when {
+            response.isSuccessful -> geocode = response.body()?.get(0)
+            response.code() == 404 -> showToast("City not found")
+            else -> showToast("Error")
+        }
+        return geocode
     }
 
-    private fun sendForecastRequestAsync(latitude: Double, longitude: Double, cityName: String) {
-        forecastService.getForecast(latitude, longitude).enqueue(object : Callback<Forecast> {
-            override fun onResponse(call: Call<Forecast>, response: Response<Forecast>) {
-                if (response.isSuccessful) {
-                    val forecast = response.body()?.apply { name = cityName }
-                    if (forecast != null) {
-                        viewModel.addWeather(forecast)
-                        invalidateOptionsMenu()
-                    }
-                } else {
-                    Toast.makeText(applicationContext, "Not found", Toast.LENGTH_LONG).show()
-                }
-            }
-            override fun onFailure(call: Call<Forecast>, t: Throwable) {
-                Toast.makeText(applicationContext, "Error", Toast.LENGTH_LONG).show()
-            }
-        })
+    private suspend fun sendForecastRequest(latitude: Double, longitude: Double, cityName: String): Forecast? {
+        val response = forecastService.getForecast(latitude, longitude)
+        var forecast: Forecast? = null
+        when {
+            response.isSuccessful -> forecast = response.body()?.apply { name = cityName }
+            else -> Toast.makeText(applicationContext, "Error", Toast.LENGTH_LONG).show()
+        }
+        return forecast
     }
 
-    private fun sendForecastRequest(latitude: Double, longitude: Double, cityName: String): Forecast? {
-        return forecastService.getForecast(latitude, longitude).execute().body()?.apply { name = cityName }
-    }
-
-    private fun updateForecast(forecast: List<Forecast>): List<Forecast> {
+    private suspend fun updateForecast(forecast: List<Forecast>): List<Forecast> {
         val updatedForecast = mutableListOf<Forecast>()
         forecast.forEach {
             if (TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - it.current.time * 1000) > 1) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    sendForecastRequest(it.latitude, it.longitude, it.name)?.let { item ->
-                        updatedForecast.add(item)
-                    }
+                sendForecastRequest(it.latitude, it.longitude, it.name)?.let { item ->
+                    updatedForecast.add(item)
                 }
             } else {
                 updatedForecast.add(it)
@@ -236,6 +224,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun saveDataToFile(file: File, forecast: List<Forecast>) {
         file.writeText(gson.toJson(forecast))
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
     }
 
     private class FragmentAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle)
