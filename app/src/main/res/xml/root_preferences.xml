@@ -25,6 +25,13 @@
             app:key="rate"
             app:title="@string/data_title"
             app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            app:defaultValue="0"
+            app:entries="@array/unit_entries"
+            app:entryValues="@array/unit_values"
+            app:key="unit"
+            app:title="@string/unit_title"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

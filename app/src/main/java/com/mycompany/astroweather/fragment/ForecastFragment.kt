@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.mycompany.astroweather.DAY_COUNT
+import com.mycompany.astroweather.FORECAST_COUNT
 import com.mycompany.astroweather.MainViewModel
 import com.mycompany.astroweather.R
-import java.util.*
+import com.mycompany.astroweather.util.Util
 
 class ForecastFragment : Fragment() {
 
@@ -27,26 +27,27 @@ class ForecastFragment : Fragment() {
         with(view) {
             val labels = mutableListOf<TextView>()
             val days = mutableListOf<TextView>()
-            for (i in 1..DAY_COUNT) {
-                labels.add(findViewById(resources.getIdentifier("day${i}Label", "id", context.packageName)))
-                days.add(findViewById(resources.getIdentifier("day${i}", "id", context.packageName)))
+            for (i in 0 until FORECAST_COUNT) {
+                labels.add(findViewById(resources.getIdentifier("day${i + 1}Label", "id", context.packageName)))
+                days.add(findViewById(resources.getIdentifier("day${i + 1}", "id", context.packageName)))
             }
             dayLabels = labels
             forecastDays = days
         }
-        updateForecastInfo()
+        viewModel.weatherData.observe(viewLifecycleOwner, { updateForecastInfo() })
     }
 
     private fun updateForecastInfo() {
-        viewModel.weatherData.apply {
-            for (i in 0 until DAY_COUNT) {
-                val day = forecasts[i]
-                val date = Calendar.getInstance().apply {
-                    timeZone = TimeZone.getTimeZone(viewModel.weatherData.location.timezoneId)
-                    timeInMillis = day.date * 1000
-                }.let { String.format("%02d.%02d", it[Calendar.DAY_OF_MONTH], it[Calendar.MONTH] + 1) }
-                dayLabels[i].text = ("${day.day} $date").toString()
-                forecastDays[i].text = ("High: ${day.high}\nLow: ${day.low}\n${day.text}").toString()
+        viewModel.weatherData.value?.apply {
+            for (i in daily.indices) {
+                val day = daily[i]
+                with (Util) {
+                    dayLabels[i].text = dateStringFromTimestamp(day.time, timezone)
+                    forecastDays[i].text = (
+                            "${formatTemperature(day.temperature.max, viewModel.currentUnit)}/" +
+                            "${formatTemperature(day.temperature.min, viewModel.currentUnit)}\n" +
+                                    day.weather[0].description)
+                }
             }
         }
     }

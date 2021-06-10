@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import com.mycompany.astroweather.MainViewModel
 import com.mycompany.astroweather.R
 import com.mycompany.astroweather.util.Util
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class MoonFragment : Fragment() {
@@ -47,7 +48,7 @@ class MoonFragment : Fragment() {
                 newMoonTime.text = formatDate(nextNewMoon)
                 fullMoonTime.text = formatDate(nextFullMoon)
                 moonPhase.text = ("${illumination.times(100).roundToInt()}%")
-                lunarDay.text = format(age / 12)
+                lunarDay.text = format(abs(age) / 1.2)
             }
         }
     }

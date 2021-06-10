@@ -24,7 +24,7 @@
     <string name="newMoonTimeLabel">New Moon</string>
     <string name="lunarDayLabel">Lunar Day</string>
     <string name="moonPhaseLabel">Moon Phase</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="cityLabel">City</string>
     <string name="timeLabel">Time</string>
@@ -36,4 +36,8 @@
     <string name="windSpeedLabel">Wind speed</string>
     <string name="humidityLabel">Humidity</string>
     <string name="visibilityLabel">Visibility</string>
+    <string name="unit_title">Unit</string>
+    <string name="action_location">Add location</string>
+    <string name="location_spinner">Location</string>
+    <string name="location">location</string>
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextClock
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -16,7 +17,7 @@ class BasicInfoFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
     private lateinit var city: TextView
     private lateinit var coordinates: TextView
-    private lateinit var time: TextView
+    private lateinit var time: TextClock
     private lateinit var temperature: TextView
     private lateinit var pressure: TextView
     private lateinit var conditions: TextView
@@ -35,18 +36,18 @@ class BasicInfoFragment : Fragment() {
             pressure = findViewById(R.id.pressure)
             conditions = findViewById(R.id.conditions)
         }
-        updateBasicInfo()
+        viewModel.weatherData.observe(viewLifecycleOwner, { updateBasicInfo() })
     }
 
     private fun updateBasicInfo() {
-        viewModel.weatherData.apply {
+        viewModel.weatherData.value?.apply {
             with (Util) {
-                city.text = location.city
-                coordinates.text = formatCords(location.lat, location.long)
-                time.text = location.timezoneId
-                temperature.text = currentObservation.condition.temperature.toString()
-                pressure.text = format(currentObservation.atmosphere.pressure)
-                conditions.text = currentObservation.condition.text
+                city.text = name
+                coordinates.text = formatCords(latitude, longitude)
+                time.timeZone = timezone
+                temperature.text = formatTemperature(current.temperature, viewModel.currentUnit)
+                pressure.text = ("${current.pressure} hPa")
+                conditions.text = current.weather[0].description
             }
         }
     }

@@ -29,16 +29,16 @@ class AdvancedInfoFragment : Fragment() {
         windSpeed = view.findViewById(R.id.windSpeed)
         humidity = view.findViewById(R.id.humidity)
         visibility = view.findViewById(R.id.visibility)
-        updateAdvancedInfo()
+        viewModel.weatherData.observe(viewLifecycleOwner, { updateAdvancedInfo() })
     }
 
     private fun updateAdvancedInfo() {
-        viewModel.weatherData.apply {
+        viewModel.weatherData.value?.apply {
             with (Util) {
-                windDirection.text = currentObservation.wind.direction.toString()
-                windSpeed.text = format(currentObservation.wind.speed)
-                humidity.text = currentObservation.atmosphere.humidity.toString()
-                visibility.text = currentObservation.atmosphere.visibility.toString()
+                windDirection.text = ("${current.windDeg}°")
+                windSpeed.text = formatSpeed(current.windSpeed, viewModel.currentUnit)
+                humidity.text = ("${current.humidity}%")
+                visibility.text = current.visibility.toString()
             }
         }
     }
