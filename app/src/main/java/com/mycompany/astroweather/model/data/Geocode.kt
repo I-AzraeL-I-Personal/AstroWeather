@@ -1,4 +1,4 @@
-package com.mycompany.astroweather.model
+package com.mycompany.astroweather.model.data
 
 import com.google.gson.annotations.SerializedName
 

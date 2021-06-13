@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="40dp"
-    tools:context=".fragment.BasicInfoFragment" >
+    android:background="@drawable/gradient_background"
+    tools:context=".fragment.basic.BasicInfoFragment">
 
     <TableRow
         android:layout_width="match_parent"
@@ -16,22 +17,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:text="@string/cityLabel"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/labelTextSize" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:text="@string/timeLabel"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/labelTextSize" />
     </TableRow>
 
@@ -46,10 +43,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/valueTextSize" />
 
         <TextClock
@@ -57,12 +52,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
             android:format12Hour="hh:mm:ss a"
             android:format24Hour="HH:mm:ss"
-            android:shadowRadius="10"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/valueTextSize" />
     </TableRow>
 
@@ -76,22 +69,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:text="@string/coordinatesLabel"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/labelTextSize" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:text="@string/temperatureLabel"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/labelTextSize" />
     </TableRow>
 
@@ -106,10 +95,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/valueTextSize" />
 
         <TextView
@@ -117,10 +104,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/valueTextSize" />
     </TableRow>
 
@@ -134,22 +119,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:text="@string/pressureLabel"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/labelTextSize" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:text="@string/conditionsLabel"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/labelTextSize" />
     </TableRow>
 
@@ -164,22 +145,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/valueTextSize" />
 
-        <TextView
-            android:id="@+id/conditions"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="@dimen/valueTextSize" />
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/conditionsImg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/conditions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/valueTextSize" />
+
+        </LinearLayout>
 
     </TableRow>
 </TableLayout>

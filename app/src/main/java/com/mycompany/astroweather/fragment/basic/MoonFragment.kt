@@ -1,4 +1,4 @@
-package com.mycompany.astroweather.fragment
+package com.mycompany.astroweather.fragment.basic
 
 import android.os.Bundle
 import android.view.LayoutInflater

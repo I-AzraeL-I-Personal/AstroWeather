@@ -1,30 +1,35 @@
 package com.mycompany.astroweather
 
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager.LayoutParams.*
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.mycompany.astroweather.activity.SettingsActivity
 import com.mycompany.astroweather.fragment.*
-import com.mycompany.astroweather.model.Forecast
-import com.mycompany.astroweather.model.ForecastService
-import com.mycompany.astroweather.model.Geocode
+import com.mycompany.astroweather.fragment.basic.*
+import com.mycompany.astroweather.fragment.wrapper.InfoWrapperFragment
+import com.mycompany.astroweather.fragment.wrapper.MoonSunWrapperFragment
+import com.mycompany.astroweather.model.*
+import com.mycompany.astroweather.model.data.Forecast
+import com.mycompany.astroweather.model.service.ForecastManager
+import com.mycompany.astroweather.model.service.ForecastService
+import com.mycompany.astroweather.model.service.FragmentAdapter
 import com.mycompany.astroweather.util.Secret
 import com.mycompany.astroweather.util.Unit
 import kotlinx.coroutines.CoroutineScope
@@ -35,12 +40,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
-const val FRAGMENT_COUNT = 5
 const val FORECAST_COUNT = 8
 const val PRECISION = 4
+const val EXPIRATION_MIN = 60
 
 const val BASE_URL = "https://api.openweathermap.org/"
 const val API_KEY = Secret.API_KEY
@@ -49,35 +53,30 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var viewModel: MainViewModel
+    private lateinit var forecastManager: ForecastManager
+    private lateinit var file: File
     private val gson = GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
         .create()
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .build()
-    private val forecastService = retrofit.create(ForecastService::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.toolbar))
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+        val forecastService = retrofit.create(ForecastService::class.java)
+        forecastManager = ForecastManager(forecastService, applicationContext)
 
         val preferences = loadSharedPreferences()
         val delayMillis = preferences["delayMillis"] as Long
         val currentUnit = preferences["currentUnit"] as Unit
 
-        val file = File("${filesDir}/weather.json").also { it.createNewFile() }
-        if (isOnline()) {
-            if (file.length() != 0L) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val forecasts = loadDataFromFile(file)
-                    val updatedForecasts = updateForecast(forecasts)
-                    saveDataToFile(file, updatedForecasts)
-                }
-            }
-        } else {
-            showToast("Can't connect to the Internet. Some info may be outdated")
-        }
+        file = File("${filesDir}/weather.json").also { it.createNewFile() }
+        updateForecast()
 
         val model: MainViewModel by viewModels {
             MainViewModelFactory(delayMillis, file, currentUnit) }
@@ -92,7 +91,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         with(menuInflater) {
-            inflate(R.menu.settings_menu, menu)
             inflate(R.menu.location_menu, menu)
         }
         val spinner = (menu!!.findItem(R.id.spinner).actionView) as Spinner
@@ -104,16 +102,24 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_settings) {
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_settings -> {
             startActivity(Intent(this, SettingsActivity::class.java))
-            return true
+            true
         }
-        return false
+        R.id.action_favorite -> {
+            viewModel.deleteCurrentWeather()
+            true
+        }
+        R.id.action_reload -> {
+            updateForecast()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {
-        if (viewPager.currentItem == 0) super.onBackPressed() else viewPager.currentItem -= 1
+        if (viewPager.currentItem == 0) super.onBackPressed() else viewPager.currentItem.minus(1)
     }
 
     private fun isOnline(): Boolean {
@@ -129,21 +135,46 @@ class MainActivity : AppCompatActivity() {
                 "currentUnit" to Unit.values()[getString("unit", "0")!!.toInt()])
         }
     }
-
     private fun initViewPager() {
-        viewPager = findViewById<ViewPager2>(R.id.pager).apply {
-            adapter = FragmentAdapter(supportFragmentManager, lifecycle)
-            (getChildAt(0) as RecyclerView).apply {
-                overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        viewPager = findViewById(R.id.pager)
+        val fragments = mutableListOf(BasicInfoFragment::class, AdvancedInfoFragment::class,
+            ForecastFragment::class, MoonFragment::class, SunFragment::class)
+        val adapter = FragmentAdapter(supportFragmentManager, lifecycle, fragments)
+        viewPager.adapter = adapter
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            (viewPager.adapter as FragmentAdapter).apply {
+                remove(4)
+                remove(3)
+                remove(1)
+                remove(0)
+                add(0, InfoWrapperFragment::class)
+                add(2, MoonSunWrapperFragment::class)
             }
+        }
+        (viewPager.getChildAt(0) as RecyclerView).apply {
+            overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        }
+    }
+
+    private fun updateForecast() {
+        if (isOnline()) {
+            if (file.length() != 0L) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val forecasts = loadDataFromFile(file)
+                    val updatedForecasts = forecastManager.getUpdatedForecast(forecasts, EXPIRATION_MIN)
+                    saveDataToFile(file, updatedForecasts)
+                }
+            }
+        } else {
+            showToast("Can't connect to the Internet. Some info may be outdated")
         }
     }
 
     private fun initCitySpinner(spinner: Spinner) {
-        viewModel.weatherList.observe(this, {
+        viewModel.weatherList.observe(this, { list ->
             val adapter = ArrayAdapter(this,
-                android.R.layout.simple_spinner_item,
-                it.map { forecast -> forecast.name })
+                android.R.layout.simple_spinner_dropdown_item,
+                list.map { it.name })
             spinner.adapter = adapter
         })
 
@@ -152,8 +183,10 @@ class MainActivity : AppCompatActivity() {
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
-                id: Long,
-            ) = viewModel.setCurrentWeather(position)
+                id: Long
+            ) {
+                viewModel.setCurrentWeather(position)
+            }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
@@ -164,58 +197,39 @@ class MainActivity : AppCompatActivity() {
             imeOptions = EditorInfo.IME_ACTION_DONE
             inputType = InputType.TYPE_CLASS_TEXT
             maxLines = 1
+            window.setSoftInputMode(SOFT_INPUT_ADJUST_NOTHING or SOFT_INPUT_STATE_VISIBLE)
+            hint = "Type a location"
         }
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    sendGeocodeRequest(editText.text.toString())?.let { geocode ->
-                        sendForecastRequest(geocode.latitude, geocode.longitude, geocode.name)?.let { forecast ->
+                    forecastManager.sendGeocodeRequest(editText.text.toString())?.let { geocode ->
+                        if (viewModel.weatherList.value?.map { it.name }?.contains(geocode.name) == false) {
+                            forecastManager.sendForecastRequest(geocode.latitude, geocode.longitude, geocode.name)?.let { forecast ->
+                                withContext(Dispatchers.Main) {
+                                    viewModel.addWeather(forecast)
+                                }
+                            }
+                        } else {
                             withContext(Dispatchers.Main) {
-                                viewModel.addWeather(forecast)
-                                editText.text.clear()
-                                invalidateOptionsMenu()
+                                showToast("City already saved")
                             }
                         }
+                    }
+                    withContext(Dispatchers.Main) {
+                        editText.text.clear()
+                        invalidateOptionsMenu()
                     }
                 }
             }
             false
         }
-    }
-
-    private suspend fun sendGeocodeRequest(location: String): Geocode? {
-        val response = forecastService.getGeocode(location)
-        var geocode: Geocode? = null
-        when {
-            response.isSuccessful -> geocode = response.body()?.get(0)
-            response.code() == 404 -> showToast("City not found")
-            else -> showToast("Error")
-        }
-        return geocode
-    }
-
-    private suspend fun sendForecastRequest(latitude: Double, longitude: Double, cityName: String): Forecast? {
-        val response = forecastService.getForecast(latitude, longitude)
-        var forecast: Forecast? = null
-        when {
-            response.isSuccessful -> forecast = response.body()?.apply { name = cityName }
-            else -> Toast.makeText(applicationContext, "Error", Toast.LENGTH_LONG).show()
-        }
-        return forecast
-    }
-
-    private suspend fun updateForecast(forecast: List<Forecast>): List<Forecast> {
-        val updatedForecast = mutableListOf<Forecast>()
-        forecast.forEach {
-            if (TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - it.current.time * 1000) > 1) {
-                sendForecastRequest(it.latitude, it.longitude, it.name)?.let { item ->
-                    updatedForecast.add(item)
-                }
-            } else {
-                updatedForecast.add(it)
+        editText.setOnFocusChangeListener { view, hasFocus ->
+            if (!hasFocus) {
+                val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                manager.hideSoftInputFromWindow(view.windowToken, 0)
             }
         }
-        return updatedForecast
     }
 
     private fun loadDataFromFile(file: File): MutableList<Forecast> {
@@ -228,21 +242,5 @@ class MainActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
-    }
-
-    private class FragmentAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle)
-        : FragmentStateAdapter(fragmentManager, lifecycle) {
-
-        override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                0 -> BasicInfoFragment()
-                1 -> AdvancedInfoFragment()
-                2 -> ForecastFragment()
-                3 -> SunFragment()
-                4 -> MoonFragment()
-                else -> throw IllegalStateException("Unexpected value: $position")
-            }
-        }
-        override fun getItemCount() = FRAGMENT_COUNT
     }
 }

@@ -2,13 +2,38 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/location"
-        android:title="@string/location"
-        app:actionViewClass="android.widget.EditText"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/action_favorite"
+        android:icon="@drawable/ic_baseline_delete_24"
+        android:title="@string/action_favorite"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/spinner"
         android:title="@string/location_spinner"
         app:actionViewClass="android.widget.Spinner"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_items"
+        android:title="@string/menu"
+        android:icon="@drawable/ic_baseline_view_headline_24"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/action_settings"
+                android:title="@string/action_settings"
+                android:icon="@drawable/ic_baseline_build_24"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_reload"
+                android:icon="@drawable/ic_baseline_cached_24"
+                android:title="@string/action_reload"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/location"
+                android:title="@string/location"
+                app:actionViewClass="android.widget.EditText"
+                android:icon="@drawable/ic_baseline_search_24"
+                android:text="@string/find_city"
+                app:showAsAction="ifRoom|collapseActionView" />
+        </menu>
+    </item>
 </menu>

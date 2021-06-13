@@ -5,6 +5,8 @@ import com.mycompany.astroweather.PRECISION
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 object Util {
 
@@ -67,5 +69,10 @@ object Util {
         } else {
             "${format(number, 1)}${toUnit.temperature}"
         }
+    }
+
+    @JvmStatic
+    fun minutesFromNow(timestamp: Long): Long {
+        return TimeUnit.MILLISECONDS.toMinutes(abs(System.currentTimeMillis() - timestamp))
     }
 }

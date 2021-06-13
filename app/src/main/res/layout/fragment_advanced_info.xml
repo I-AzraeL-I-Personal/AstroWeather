@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="40dp"
-    tools:context=".fragment.AdvancedInfoFragment" >
+    android:background="@drawable/gradient_background"
+    tools:context=".fragment.basic.AdvancedInfoFragment">
 
     <TableRow
         android:layout_width="match_parent"
@@ -16,22 +16,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:text="@string/windDirectionLabel"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/labelTextSize" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:text="@string/windSpeedLabel"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/labelTextSize" />
     </TableRow>
 
@@ -46,10 +42,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/valueTextSize" />
 
         <TextView
@@ -57,10 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/valueTextSize" />
     </TableRow>
 
@@ -74,22 +66,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:text="@string/humidityLabel"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/labelTextSize" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:text="@string/visibilityLabel"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/labelTextSize" />
     </TableRow>
 
@@ -104,10 +92,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/valueTextSize" />
 
         <TextView
@@ -115,10 +101,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:shadowColor="#FFFFFF"
-            android:shadowRadius="10"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
             android:textSize="@dimen/valueTextSize" />
     </TableRow>
 

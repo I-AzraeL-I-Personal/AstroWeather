@@ -39,5 +39,9 @@
     <string name="unit_title">Unit</string>
     <string name="action_location">Add location</string>
     <string name="location_spinner">Location</string>
-    <string name="location">location</string>
+    <string name="location">Find location</string>
+    <string name="find_city">Find city</string>
+    <string name="action_favorite">Add to favourites</string>
+    <string name="action_reload">Reload data</string>
+    <string name="menu">M</string>
 </resources>

@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/day_background"
-    android:paddingTop="40dp"
-    tools:context=".fragment.SunFragment">
+    tools:context=".fragment.basic.SunFragment">
 
     <TableRow
         android:layout_width="match_parent"

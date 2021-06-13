@@ -1,6 +1,8 @@
-package com.mycompany.astroweather.model
+package com.mycompany.astroweather.model.service
 
 import com.mycompany.astroweather.API_KEY
+import com.mycompany.astroweather.model.data.Forecast
+import com.mycompany.astroweather.model.data.Geocode
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

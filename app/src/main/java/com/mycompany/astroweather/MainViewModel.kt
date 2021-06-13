@@ -5,7 +5,7 @@ import com.astrocalculator.AstroCalculator
 import com.astrocalculator.AstroDateTime
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
-import com.mycompany.astroweather.model.Forecast
+import com.mycompany.astroweather.model.data.Forecast
 import com.mycompany.astroweather.util.Unit
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -33,7 +33,7 @@ class MainViewModel(private val delayMillis: Long, private val file: File, val c
         }
         viewModelScope.launch {
             while (true) {
-                _astroCalculator.value = astroCalculator.value?.apply { dateTime = createAstroDateTime() }
+                _astroCalculator.value = _astroCalculator.value?.apply { dateTime = createAstroDateTime() }
                 delay(delayMillis)
             }
         }
@@ -49,12 +49,24 @@ class MainViewModel(private val delayMillis: Long, private val file: File, val c
     }
 
     fun addWeather(weather: Forecast) {
-        weatherList.value?.add(weather)
-        file.writeText(gson.toJson(weatherList.value))
+        _weatherList.value = _weatherList.value?.apply { add(weather) }
+        saveDataToFile()
+    }
+
+    fun deleteCurrentWeather() {
+        if (_weatherList.value?.size!! > 1) {
+            _weatherList.value = _weatherList.value.apply { _weatherData.value?.let { this?.remove(it) } }
+            setCurrentWeather(0)
+            saveDataToFile()
+        }
     }
 
     private fun loadDataFromFile(): MutableList<Forecast> {
         return gson.fromJson(file.readText(), Array<Forecast>::class.java).toMutableList()
+    }
+
+    private fun saveDataToFile() {
+        file.writeText(gson.toJson(weatherList.value))
     }
 
     private fun createAstroDateTime(): AstroDateTime {

@@ -1,21 +1,5 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/coordinates_header">
-
-        <EditTextPreference
-            app:key="latitude"
-            app:title="@string/latitude_title"
-            app:defaultValue="@string/latitude_default_value"
-            app:useSimpleSummaryProvider="true" />
-
-        <EditTextPreference
-            app:key="longitude"
-            app:title="@string/longitude_title"
-            app:defaultValue="@string/longitude_default_value"
-            app:useSimpleSummaryProvider="true" />
-
-    </PreferenceCategory>
-
     <PreferenceCategory app:title="@string/data_header">
 
         <ListPreference
