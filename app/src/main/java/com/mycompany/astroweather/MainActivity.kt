@@ -32,6 +32,7 @@ import com.mycompany.astroweather.model.service.ForecastService
 import com.mycompany.astroweather.model.service.FragmentAdapter
 import com.mycompany.astroweather.util.Secret
 import com.mycompany.astroweather.util.Unit
+import com.mycompany.astroweather.util.Util
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -140,29 +141,29 @@ class MainActivity : AppCompatActivity() {
         val fragments = mutableListOf(BasicInfoFragment::class, AdvancedInfoFragment::class,
             ForecastFragment::class, MoonFragment::class, SunFragment::class)
         val adapter = FragmentAdapter(supportFragmentManager, lifecycle, fragments)
-        viewPager.adapter = adapter
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            (viewPager.adapter as FragmentAdapter).apply {
-                remove(4)
-                remove(3)
-                remove(1)
-                remove(0)
-                add(0, InfoWrapperFragment::class)
-                add(2, MoonSunWrapperFragment::class)
+            adapter.apply {
+                remove(4, 3, 1, 0)
+                add(mapOf(0 to InfoWrapperFragment::class, 2 to MoonSunWrapperFragment::class))
             }
         }
-        (viewPager.getChildAt(0) as RecyclerView).apply {
-            overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-        }
+        viewPager.adapter = adapter
+        (viewPager.getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
     }
 
     private fun updateForecast() {
         if (isOnline()) {
             if (file.length() != 0L) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val forecasts = loadDataFromFile(file)
-                    val updatedForecasts = forecastManager.getUpdatedForecast(forecasts, EXPIRATION_MIN)
-                    saveDataToFile(file, updatedForecasts)
+                    val forecastsToUpdate = loadDataFromFile(file).filter {
+                        Util.minutesFromNow(it.current.time * 1000) > EXPIRATION_MIN }
+                    val updatedForecasts = forecastManager.getUpdatedForecast(forecastsToUpdate)
+                    if (updatedForecasts.isNotEmpty()) {
+                        saveDataToFile(file, updatedForecasts)
+                        withContext(Dispatchers.Main) {
+                            viewModel.initViewModel()
+                        }
+                    }
                 }
             }
         } else {

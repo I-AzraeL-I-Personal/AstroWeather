@@ -29,17 +29,21 @@ class FragmentAdapter(fragmentManager: FragmentManager,
         return fragmentIds.contains(itemId)
     }
 
-    fun add(index: Int, fragment: KClass<out Fragment>) {
-        fragments.add(index, fragment)
-        fragmentIds.add(index, fragments.hashCode().toLong())
-        notifyItemRangeChanged(index, fragments.size)
+    fun add(classes: Map<Int, KClass<out Fragment>>) {
+        classes.forEach {
+            fragments.add(it.key, it.value)
+            fragmentIds.add(it.key, fragments.hashCode().toLong())
+            notifyItemRangeChanged(it.key, fragments.size)
+        }
         notifyDataSetChanged()
     }
 
-    fun remove(index: Int) {
-        fragments.removeAt(index)
-        fragmentIds.removeAt(index)
-        notifyItemRangeChanged(index, fragments.size)
+    fun remove(vararg positions: Int) {
+        positions.forEach {
+            fragments.removeAt(it)
+            fragmentIds.removeAt(it)
+            notifyItemRangeChanged(it, fragments.size)
+        }
         notifyDataSetChanged()
     }
 }

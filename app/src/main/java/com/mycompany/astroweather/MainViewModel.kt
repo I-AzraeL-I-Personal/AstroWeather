@@ -28,9 +28,7 @@ class MainViewModel(private val delayMillis: Long, private val file: File, val c
     val weatherData: LiveData<Forecast>  = _weatherData
 
     init {
-        if (file.length() != 0L) {
-            _weatherList.value = loadDataFromFile()
-        }
+        initViewModel()
         viewModelScope.launch {
             while (true) {
                 _astroCalculator.value = _astroCalculator.value?.apply { dateTime = createAstroDateTime() }
@@ -58,6 +56,12 @@ class MainViewModel(private val delayMillis: Long, private val file: File, val c
             _weatherList.value = _weatherList.value.apply { _weatherData.value?.let { this?.remove(it) } }
             setCurrentWeather(0)
             saveDataToFile()
+        }
+    }
+
+    fun initViewModel() {
+        if (file.length() != 0L) {
+            _weatherList.value = loadDataFromFile()
         }
     }
 

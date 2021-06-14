@@ -1,5 +1,6 @@
 package com.mycompany.astroweather.util
 
+import android.util.Log
 import com.astrocalculator.AstroDateTime
 import com.mycompany.astroweather.PRECISION
 import java.math.BigDecimal

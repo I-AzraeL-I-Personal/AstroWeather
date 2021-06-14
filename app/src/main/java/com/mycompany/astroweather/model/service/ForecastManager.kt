@@ -4,7 +4,6 @@ import android.content.Context
 import android.widget.Toast
 import com.mycompany.astroweather.model.data.Forecast
 import com.mycompany.astroweather.model.data.Geocode
-import com.mycompany.astroweather.util.Util
 
 class ForecastManager(private val forecastService: ForecastService, private val context: Context) {
 
@@ -29,18 +28,10 @@ class ForecastManager(private val forecastService: ForecastService, private val 
         return forecast
     }
 
-    suspend fun getUpdatedForecast(forecast: List<Forecast>, expirationMinutes: Int): List<Forecast> {
-        val updatedForecast = mutableListOf<Forecast>()
-        forecast.forEach {
-            if (Util.minutesFromNow(it.current.time * 1000) >= expirationMinutes) {
-                sendForecastRequest(it.latitude, it.longitude, it.name)?.let { item ->
-                    updatedForecast.add(item)
-                }
-            } else {
-                updatedForecast.add(it)
-            }
+    suspend fun getUpdatedForecast(forecast: List<Forecast>): List<Forecast> {
+        return forecast.mapNotNull {
+            sendForecastRequest(it.latitude, it.longitude, it.name)
         }
-        return updatedForecast
     }
 
     private fun showToast(message: String) {
