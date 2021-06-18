@@ -125,8 +125,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun isOnline(): Boolean {
         val manager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = manager.activeNetworkInfo
-        return network != null && network.isConnectedOrConnecting()
+        return manager.isActiveNetworkMetered
     }
 
     private fun loadSharedPreferences(): Map<String, Any> {
